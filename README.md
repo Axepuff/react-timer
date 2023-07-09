@@ -1,1 +1,3 @@
 # react-timer
+
+### Accurate timer
