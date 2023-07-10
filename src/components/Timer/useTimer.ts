@@ -27,6 +27,7 @@ export const useTimer = ({ timerTick = 1000, onEnd }: IUseTimerParams): IUseTime
         setTimeLeft(msToTheEnd);
 
         const timeoutFunction = () => {
+            clearTimeout(timer.current);
             const realElapsedMs = Date.now() - startTime;
 
             if (realElapsedMs >= endTime - startTime) {

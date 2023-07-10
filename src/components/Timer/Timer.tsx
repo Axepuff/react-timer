@@ -26,13 +26,13 @@ export const Timer: React.FC = () => {
         e.preventDefault();
         const time = e.target.time.value;
 
-        if (!time || time === '00:00:00' || formState === 'inProgress') {
+        if (!time || time === '00:00:00') {
             return;
         }
 
         setFormState('inProgress');
         start(time);
-    }, [start, formState]);
+    }, [start]);
 
     const onStop = React.useCallback(() => {
         setFormState('initial');
