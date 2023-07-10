@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ChangeEvent } from 'react';
 import './Timer.css';
-import { useTimer } from './useTimer.ts';
+import { useTimer } from './useTimer';
 
 export const Timer: React.FC = () => {
     const [formState, setFormState] = React.useState<
@@ -26,13 +26,13 @@ export const Timer: React.FC = () => {
         e.preventDefault();
         const time = e.target.time.value;
 
-        if (!time || time === '00:00:00') {
+        if (!time || time === '00:00:00' || formState === 'inProgress') {
             return;
         }
 
         setFormState('inProgress');
         start(time);
-    }, [start]);
+    }, [start, formState]);
 
     const onStop = React.useCallback(() => {
         setFormState('initial');
@@ -40,11 +40,13 @@ export const Timer: React.FC = () => {
     }, [stop]);
 
     const onReset = React.useCallback(() => {
+        setFormState('initial');
         onStop();
         resetTimer();
     }, [onStop]);
 
     const onPause = React.useCallback(() => {
+        setFormState('pause');
         pause();
     }, [pause]);
 
