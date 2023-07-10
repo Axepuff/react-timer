@@ -17,6 +17,12 @@ export const useTimer = ({ timerTick = 1000, onEnd }: IUseTimerParams): IUseTime
     const [timeLeft, setTimeLeft] = React.useState<number | null>(null);
     const timer = useRef<number | null>(null);
 
+    const clearTimer = () => {
+        if (timer.current) {
+            clearTimeout(timer.current);
+        }
+    }
+
     const start = React.useCallback((time: string) => {
         const startTime = Date.now();
         const [hours, minutes, seconds] = time.split(':').map(Number);
@@ -27,6 +33,7 @@ export const useTimer = ({ timerTick = 1000, onEnd }: IUseTimerParams): IUseTime
         setTimeLeft(msToTheEnd);
 
         const timeoutFunction = () => {
+            clearTimer();
             const realElapsedMs = Date.now() - startTime;
 
             if (realElapsedMs >= endTime - startTime) {
@@ -47,23 +54,17 @@ export const useTimer = ({ timerTick = 1000, onEnd }: IUseTimerParams): IUseTime
     }, [timeLeft, timerTick, onEnd]);
 
     const stop = React.useCallback(() => {
-        if (timer.current) {
-            setTimeLeft(null);
-            clearTimeout(timer.current);
-        }
+        clearTimer();
+        setTimeLeft(null);
     }, []);
 
     const pause = React.useCallback(() => {
-        if (timer.current) {
-            clearTimeout(timer.current);
-        }
+        clearTimer();
     }, []);
 
     useEffect(() => {
         return () => {
-            if (timer.current) {
-                clearTimeout(timer.current);
-            }
+            clearTimer();
         }
     }, []);
 

@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { ChangeEvent } from 'react';
 import './Timer.css';
-import { useTimer } from './useTimer.ts';
+import { useTimer } from './useTimer';
 
 export const Timer: React.FC = () => {
-    const [formState, setFormState] = React.useState<
+    const [timerState, setTimerState] = React.useState<
         'initial' | 'inProgress' | 'finish' | 'pause'
     >('initial');
 
@@ -16,37 +16,39 @@ export const Timer: React.FC = () => {
         }
     };
 
-    const onEnd = React.useCallback(() => {
-        setFormState('finish');
-    }, []);
+    const onEnd = () => {
+        setTimerState('finish');
+    }
 
     const { start, stop, pause, timeLeft } = useTimer({ onEnd });
 
-    const onStart = React.useCallback((e: ChangeEvent<HTMLFormElement>) => {
+    const onStart = (e: ChangeEvent<HTMLFormElement>) => {
         e.preventDefault();
         const time = e.target.time.value;
 
-        if (!time || time === '00:00:00') {
+        if (!time || time === '00:00:00' || timerState === 'inProgress') {
             return;
         }
 
-        setFormState('inProgress');
+        setTimerState('inProgress');
         start(time);
-    }, [start]);
+    }
 
     const onStop = React.useCallback(() => {
-        setFormState('initial');
+        setTimerState('initial');
         stop();
     }, [stop]);
 
-    const onReset = React.useCallback(() => {
+    const onReset = () => {
+        setTimerState('initial');
         onStop();
         resetTimer();
-    }, [onStop]);
+    }
 
-    const onPause = React.useCallback(() => {
+    const onPause = () => {
+        setTimerState('pause');
         pause();
-    }, [pause]);
+    }
 
     const timerStateString = React.useMemo(() => {
         if (typeof timeLeft === 'number') {
@@ -65,37 +67,42 @@ export const Timer: React.FC = () => {
                     defaultValue="00:00:00"
                 />
             </label>
-            <input
+            <button
                 className="timer-button"
                 type="submit"
                 name="startTimer"
-                value="Start"
-            />
-            <input
+            >
+                Start
+            </button>
+            <button
                 className="timer-button"
                 type="button"
                 name="stopTimer"
                 value="Stop"
                 onClick={onStop}
-            />
-            <input
+            >
+                Stop
+            </button>
+            <button
                 className="timer-button"
                 type="button"
                 name="pauseTimer"
-                value="Pause"
                 onClick={onPause}
-            />
-            <input
+            >
+                Pause
+            </button>
+            <button
                 className="timer-button"
                 type="button"
                 name="clearTimer"
-                value="Clear"
                 onClick={onReset}
-            />
+            >
+                Clear
+            </button>
             <div className="time-left">
                 <span>{timerStateString}</span>
             </div>
-            {formState === 'finish' && 'ЗАВЕРШЕНО!'}
+            {timerState === 'finish' && 'ЗАВЕРШЕНО!'}
         </form>
     );
 };
