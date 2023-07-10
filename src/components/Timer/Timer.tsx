@@ -42,7 +42,7 @@ export const Timer: React.FC = () => {
     const onReset = React.useCallback(() => {
         onStop();
         resetTimer();
-    }, [onStop, resetTimer]);
+    }, [onStop]);
 
     const onPause = React.useCallback(() => {
         pause();
